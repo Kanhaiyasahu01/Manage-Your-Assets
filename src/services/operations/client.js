@@ -26,9 +26,9 @@ const {
 // Add Client Service
 export const addClientService = (token, clients, billingAddress, shippingAddress, additionalDetails,formData) => {
   return async (dispatch) => {
-    console.log("inside add client service")
-    // const toastId = toast.loading("Loading...");
-    dispatch(setLoading(true));
+    // console.log("inside add client service")
+    const toastId = toast.loading("Loading...");
+
     try {
       // Step 1: Call backend API for billing address
       const billingResponse = await apiConnector("POST",BILLING_ADDRESS, billingAddress, {
@@ -91,7 +91,8 @@ export const addClientService = (token, clients, billingAddress, shippingAddress
       toast.error("Failed to add client");
       console.log(error.message)
     } finally {
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
+      toast.dismiss(toastId)
     }
   };
 };

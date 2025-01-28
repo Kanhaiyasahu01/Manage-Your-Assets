@@ -37,6 +37,8 @@ export const ManageClient = () => {
     setIsModalOpen(false); // Close the modal
     setClientIdToDelete(null); // Clear the client ID
   };
+  console.log(clients);
+
 
   return (
     <div className="container mx-auto mt-10">
@@ -58,6 +60,7 @@ export const ManageClient = () => {
                   <th className="py-3 px-4 border-b">Name</th>
                   <th className="py-3 px-4 border-b">Company</th>
                   <th className="py-3 px-4 border-b">Email</th>
+                  <th className="py-3 px-4 border-b">Plant Name</th>
 
                   <th className="py-3 px-4 border-b text-center">Actions</th>
                 </tr>
@@ -69,6 +72,7 @@ export const ManageClient = () => {
                     <td className="py-3 px-4 border-b">{client.billingAddress.company}</td>
                     <td className="py-3 px-4 border-b">{client.billingAddress.name}</td>
                     <td className="py-3 px-4 border-b">{client.billingAddress.email}</td>
+                    <td className="py-3 px-4 border-b">{client?.additionalDetails?.plantName}</td>
                     <td className="py-3 px-4 border-b text-center">
                       <button
                         onClick={() => handleDeleteClient(client._id)}

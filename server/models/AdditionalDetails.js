@@ -20,8 +20,9 @@ const additionalDetailsSchema = new mongoose.Schema({
     discount: {
         type: Number,
     },
-    documentId: {
+    plantName: {
         type: String,
+        required:true,
     },
     customFields: [
         {

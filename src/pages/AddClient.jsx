@@ -10,6 +10,7 @@ export const AddClient = () => {
   const navigate = useNavigate(); 
   const {token} = useSelector((state) => state.auth)
   const {clients} = useSelector((state)=>state.client)
+  const [loading ,setLoading] = useState(false);
 
   // useState for formData of each section
   const [billingAddress, setBillingAddress] = useState({
@@ -19,6 +20,7 @@ export const AddClient = () => {
     phone: "",
     address: "",
     city: "",
+    state:"",
     country: "",
     postbox: "",
   });
@@ -30,6 +32,7 @@ export const AddClient = () => {
     phone: "",
     address: "",
     city: "",
+    state:"",
     country: "",
     postbox: "",
   });
@@ -37,7 +40,7 @@ export const AddClient = () => {
   const [additionalDetails, setAdditionalDetails] = useState({
     tax: "",
     discount: "",
-    documentId: "",
+    plantName: "",
     customFields: [],
   });
 
@@ -133,7 +136,7 @@ console.log(additionalDetails)
                 : "bg-gray-300"
             } rounded`}
           >
-            Additional Details
+            Add Plant Details
           </button>
         </div>
 
@@ -226,9 +229,9 @@ console.log(additionalDetails)
           {/* Additional Details Tab */}
           {activeTab === "additional" && (
             <div>
-              <h3 className="text-lg font-bold mb-4">Additional Details</h3>
+              <h3 className="text-lg font-bold mb-4">Plant Details</h3>
               <div className="flex flex-col space-y-4">
-                <div className="flex justify-between items-center">
+                {/* <div className="flex justify-between items-center">
                   <label
                     className="w-1/4 text-left font-semibold"
                     htmlFor="tax"
@@ -243,8 +246,8 @@ console.log(additionalDetails)
                     onChange={handleAdditionalChange}
                     className="w-3/4 mb-2 p-2 border border-gray-300 rounded"
                   />
-                </div>
-                <div className="flex justify-between items-center">
+                </div> */}
+                {/* <div className="flex justify-between items-center">
                   <label
                     className="w-1/4 text-left font-semibold"
                     htmlFor="discount"
@@ -259,25 +262,25 @@ console.log(additionalDetails)
                     onChange={handleAdditionalChange}
                     className="w-3/4 mb-2 p-2 border border-gray-300 rounded"
                   />
-                </div>
+                </div> */}
                 <div className="flex justify-between items-center">
                   <label
                     className="w-1/4 text-left font-semibold"
-                    htmlFor="documentId"
+                    htmlFor="plantName"
                   >
-                    Document ID
+                    Plant Name
                   </label>
                   <input
                     type="text"
-                    name="documentId"
-                    placeholder="Document ID"
-                    value={additionalDetails.documentId}
+                    name="plantName"
+                    placeholder="Plant Name"
+                    value={additionalDetails.plantName}
                     onChange={handleAdditionalChange}
                     className="w-3/4 mb-2 p-2 border border-gray-300 rounded"
                   />
                 </div>
                 {/* Custom Fields */}
-                <h4 className="font-bold mt-4">Custom Fields</h4>
+                <h4 className="font-bold mt-4">Add more fields</h4>
                 <input
                   type="text"
                   name="name"
