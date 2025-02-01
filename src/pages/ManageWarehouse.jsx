@@ -85,12 +85,12 @@ export const ManageWarehouse = () => {
                       >
                         Edit
                       </button>
-                      {/* <button
-                        className="bg-red-400 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg transition duration-200"
+                      <button
+                        className="bg-red-400 hover:bg-red-600 text-white font-bold py-1 ml-2 px-3 rounded-lg transition duration-200"
                         onClick={() => handleDeleteClick(warehouse._id)}
                       >
                         Delete
-                      </button> */}
+                      </button>
                     </div>
                   </div>
                 ))

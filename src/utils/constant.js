@@ -31,6 +31,8 @@ export const sidebarData = [
         { name: "Manage Warehouse", path: "stock/manage-warehouse" },
         { name: "Add New Product", path: "stock/add-product" },
         { name: "Manage Product", path: "stock/manage-product" },
+        { name: "Category", path: "stock/category" },
+        { name: "Manage Category", path: "stock/manage-category" },
       ],
     },
     {

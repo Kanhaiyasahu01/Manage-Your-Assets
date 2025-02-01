@@ -20,6 +20,11 @@ export const warehouseEndpoints={
     DELETE_WAREHOUSE:`${BASE_URL}/warehouse/delete`,
     UPDATE_PRODUCT:`${BASE_URL}/warehouse/update-product`,
     DELETE_PRODUCT:`${BASE_URL}/warehouse/delete-product`,
+
+    ADD_CATEGORY:`${BASE_URL}/warehouse/add-category`,
+    UPDATE_CATEGORY:`${BASE_URL}/warehouse/update-category`,
+    DELETE_CATEGORY:`${BASE_URL}/warehouse/delete-category`,
+    GET_ALL_CATEGORY:`${BASE_URL}/warehouse/get-all-categories`,
 }
 
 

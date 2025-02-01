@@ -202,8 +202,10 @@ export const ManageDocument = ({ type }) => {
                 <tr key={document._id}>
                   <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
                   <td className="border border-gray-300 px-4 py-2">
-                    {document.client.billingAddress.company}
-                  </td>
+  {document.client && document.client.billingAddress
+    ? document.client.billingAddress.company
+    : 'N/A'}
+</td>
                   <td className="border border-gray-300 px-4 py-2">
                     {new Date(document.createdAt).toLocaleDateString('en-US')}
                   </td>

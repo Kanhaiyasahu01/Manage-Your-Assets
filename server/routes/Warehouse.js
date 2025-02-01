@@ -16,6 +16,13 @@ const {
   deleteProduct
 } = require("../controllers/Product");
 
+const {
+  addCategory,
+  getAllCategories,
+  updateCategory,
+  deleteCategory,
+} = require("../controllers/Product")
+
 const { auth , isAdmin } = require("../middlewares/auth")
 
 
@@ -40,5 +47,12 @@ router.post("/add-product",auth,addProductToWarehouse);
 router.put("/update-product",auth,updateProducts);
 
 
+router.post('/add-category',addCategory);
+router.put('/update-category/:id',updateCategory);
+router.delete('/delete-category/:id',deleteCategory);
+router.get('/get-all-categories',getAllCategories);
+
 router.delete("/delete-product",auth,deleteProduct);
+
+
 module.exports = router;

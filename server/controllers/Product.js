@@ -1,6 +1,6 @@
 const Product = require('../models/Product'); // Assuming your product schema is in models/Product.js
 const Warehouse = require('../models/Warehouse'); // Assuming your warehouse schema is in models/Warehouse.js
-
+const Category = require('../models/Category');
 // Controller function to add a new product to the warehouse
 exports.addProductToWarehouse = async (req, res) => {
   try {
@@ -159,5 +159,132 @@ exports.deleteProduct = async (req, res) => {
   } catch (err) {
     console.error("Error deleting product:", err);
     return res.status(500).json({success:false, message: "Internal server error." });
+  }
+};
+
+exports.addCategory = async (req, res) => {
+  try {
+    const { category, description } = req.body;
+
+    // Validate required fields
+    console.log("inside backend of create category");
+    if (!category || !description) {
+      return res.status(400).json({
+        success: false,
+        message: "Category and description are required",
+      });
+    }
+
+
+    // Create new category
+    const newCategory = await Category.create({ category, description });
+
+    return res.status(201).json({
+      success: true,
+      message: "Category created successfully",
+      data: newCategory, // Include the created category in response
+    });
+
+  } catch (err) {
+    console.error("Error creating category:", err); // Log error for debugging
+    return res.status(500).json({
+      success: false,
+      message: "Unable to create category",
+      error: err.message, // Include error message for debugging
+    });
+  }
+};
+
+exports.getAllCategories = async (req, res) => {
+  try {
+    console.log("inside backend of all categories");
+    const categories = await Category.find();
+
+    return res.status(200).json({
+      success: true,
+      message: "Categories retrieved successfully",
+      data: categories,
+    });
+
+  } catch (err) {
+    console.error("Error fetching categories:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch categories",
+      error: err.message,
+    });
+  }
+};
+
+// Update a category by ID
+exports.updateCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // console.log(id)
+    const { category, description } = req.body;
+    console.log("inside backend of update");
+    if (!category || !description) {
+      return res.status(400).json({
+        success: false,
+        message: "Category and description are required",
+      });
+    }
+
+    const updatedCategory = await Category.findByIdAndUpdate(
+      id,
+      { category, description },
+      { new: true, runValidators: true }
+    );
+
+
+    if (!updatedCategory) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Category updated successfully",
+      data: updatedCategory,
+    });
+
+  } catch (err) {
+    console.error("Error updating category:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to update category",
+      error: err.message,
+    });
+  }
+};
+
+// Delete a category by ID
+exports.deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("inside backend of delete");
+    const deletedCategory = await Category.findByIdAndDelete(id);
+
+    if (!deletedCategory) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Category deleted successfully",
+    });
+
+  } catch (err) {
+    console.error("Error deleting category:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to delete category",
+      error: err.message,
+    });
   }
 };

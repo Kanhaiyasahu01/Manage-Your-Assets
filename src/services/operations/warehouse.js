@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { addWarehouse, setLoading, updateWarehouseProducts,deleteProductStore, addProductToWarehouse } from "../../slice/warehouse"; // Import actions
 
 
+
 import { setWarehouses ,updateWarehouse,deleteWarehouse} from "../../slice/warehouse"; // Import actions
 
 
@@ -16,6 +17,12 @@ const {
     DELETE_WAREHOUSE,
     UPDATE_PRODUCT,
     DELETE_PRODUCT,
+
+    ADD_CATEGORY,
+    UPDATE_CATEGORY,
+    DELETE_CATEGORY,
+    GET_ALL_CATEGORY,
+
 } = warehouseEndpoints
 
 // ok 
@@ -261,4 +268,112 @@ export const deleteProduct = (productIdToDelete, token, warehouseId) => {
       dispatch(setLoading(false)); // End loading state
     }
   };
+};
+
+
+export const createCategoryService = async (token, formData) => {
+  const toastId = toast.loading("Creating Category...");
+  console.log("inside front end create category")
+  try {
+    // API call to create category
+    const response = await apiConnector("POST", ADD_CATEGORY, formData, {
+      Authorization: `Bearer ${token}`,
+    });
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+
+    // Show success message
+    toast.success("Category created successfully");
+    return response.data.category; // Return the newly created category
+  } catch (error) {
+    console.error("Category creation error:", error);
+    toast.error("Failed to create category");
+    return null;
+  } finally {
+    toast.dismiss(toastId);
+  }
+};
+
+
+export const getAllCategoriesService = async (token, setAllCategories) => {
+  const toastId = toast.loading("Fetching Categories...");
+  console.log("inside f get all category");
+  try {
+    // API call to get all categories
+    const response = await apiConnector("GET", GET_ALL_CATEGORY, null, {
+      Authorization: `Bearer ${token}`,
+    });
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+    console.log(response);
+    // Update the state with the categories data
+    setAllCategories(response.data.data);
+
+    // Show success message
+    toast.success("Categories fetched successfully");
+
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    toast.error("Failed to fetch categories");
+  } finally {
+    toast.dismiss(toastId);
+  }
+};
+
+export const updateCategoryService = async (token, categoryId, formData) => {
+  const toastId = toast.loading("Updating Category...");
+  console.log("inside front end update category");
+
+  try {
+    // API call to update the category
+    const response = await apiConnector("PUT", `${UPDATE_CATEGORY}/${categoryId}`, formData, {
+      Authorization: `Bearer ${token}`,
+    });
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+    console.log(response);
+    // Show success message
+    toast.success("Category updated successfully");
+    return response.data.category; // Return the updated category
+  } catch (error) {
+    console.error("Category update error:", error);
+    toast.error("Failed to update category");
+    return null;
+  } finally {
+    toast.dismiss(toastId);
+  }
+};
+
+
+
+export const deleteCategoryService = async (token, categoryId) => {
+  const toastId = toast.loading("Deleting Category...");
+  console.log("inside front end delete category");
+
+  try {
+    // API call to delete the category
+    const response = await apiConnector("DELETE", `${DELETE_CATEGORY}/${categoryId}`, null, {
+      Authorization: `Bearer ${token}`,
+    });
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+    console.log(response);
+    // Show success message
+    toast.success("Category deleted successfully");
+    return response.data; // Return response data if necessary
+  } catch (error) {
+    console.error("Category delete error:", error);
+    toast.error("Failed to delete category");
+    return null;
+  } finally {
+    toast.dismiss(toastId);
+  }
 };

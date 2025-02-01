@@ -48,6 +48,8 @@ import { ViewMarketingQuotations } from './pages/ViewMarketingQuotations';
 import { ROLE } from './utils/constant';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Category } from './pages/Category';
+import { ManageCategory } from './pages/ManageCategory';
 function App() {
 
   const {user} = useSelector((state)=>state.profile);
@@ -174,7 +176,12 @@ function App() {
         <Route path="stock/manage-warehouse" element={<ManageWarehouse />} />
         <Route path="stock/add-product" element={<AddNewProduct />} />
         <Route path="stock/manage-product" element={<ManageNewProduct />} />
-        <Route path="/stock/update-product/:id" element={<UpdateProduct />} />  
+        <Route path="/stock/update-product/:id" element={<UpdateProduct />} />
+
+        <Route path="/stock/category/:id?" element={<Category/>} />  
+        <Route path="/stock/manage-category" element={<ManageCategory />} />
+
+        
             </>
             )
         }
