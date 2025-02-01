@@ -78,7 +78,7 @@ export const Enquiry = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium">Contact Person</label>
+            <label className="block text-sm font-medium">User Name</label>
             <input
               type="text"
               name="contactPerson"

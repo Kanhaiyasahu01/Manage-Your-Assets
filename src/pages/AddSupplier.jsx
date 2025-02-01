@@ -20,6 +20,7 @@ export const AddSupplier = () => {
     phone: "",
     address: "",
     city: "",
+    state:"",
     country: "",
     postbox: "",
   });
@@ -31,6 +32,7 @@ export const AddSupplier = () => {
     phone: "",
     address: "",
     city: "",
+    state:"",
     country: "",
     postbox: "",
   });
@@ -38,7 +40,7 @@ export const AddSupplier = () => {
   const [additionalDetails, setAdditionalDetails] = useState({
     tax: "",
     discount: "",
-    documentId: "",
+    plantName: "",
     customFields: [],
   });
 
@@ -131,7 +133,7 @@ export const AddSupplier = () => {
               activeTab === "additional" ? "bg-blue-500 text-white" : "bg-gray-300"
             } rounded`}
           >
-            Additional Details
+            Add Supplier Details
           </button>
         </div>
 
@@ -225,9 +227,9 @@ export const AddSupplier = () => {
           {/* Additional Details Tab */}
           {activeTab === "additional" && (
             <div>
-              <h3 className="text-lg font-bold mb-4">Additional Details</h3>
+              <h3 className="text-lg font-bold mb-4">Add Vendor Details</h3>
               <div className="flex flex-col space-y-4">
-                <div className="flex justify-between items-center">
+                {/* <div className="flex justify-between items-center">
                   <label
                     className="w-1/4 text-left font-semibold"
                     htmlFor="tax"
@@ -242,8 +244,8 @@ export const AddSupplier = () => {
                     onChange={handleAdditionalChange}
                     className="w-3/4 mb-2 p-2 border border-gray-300 rounded"
                   />
-                </div>
-                <div className="flex justify-between items-center">
+                </div> */}
+                {/* <div className="flex justify-between items-center">
                   <label
                     className="w-1/4 text-left font-semibold"
                     htmlFor="discount"
@@ -258,25 +260,25 @@ export const AddSupplier = () => {
                     onChange={handleAdditionalChange}
                     className="w-3/4 mb-2 p-2 border border-gray-300 rounded"
                   />
-                </div>
+                </div> */}
                 <div className="flex justify-between items-center">
                   <label
                     className="w-1/4 text-left font-semibold"
-                    htmlFor="documentId"
+                    htmlFor="plantName"
                   >
-                    Document ID
+                    Add Vendor Name
                   </label>
                   <input
                     type="text"
-                    name="documentId"
-                    placeholder="Document ID"
-                    value={additionalDetails.documentId}
+                    name="plantName"
+                    placeholder="Vendor Name"
+                    value={additionalDetails.vendor}
                     onChange={handleAdditionalChange}
                     className="w-3/4 mb-2 p-2 border border-gray-300 rounded"
                   />
                 </div>
                 {/* Custom Fields */}
-                <h4 className="font-bold mt-4">Custom Fields</h4>
+                <h4 className="font-bold mt-4">Add more fields</h4>
                 <input
                   type="text"
                   name="name"

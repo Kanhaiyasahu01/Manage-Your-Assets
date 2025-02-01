@@ -57,6 +57,7 @@ export const ManageSupplier = () => {
                   <th className="py-3 px-4 border-b">Name</th>
                   <th className="py-3 px-4 border-b">Company</th>
                   <th className="py-3 px-4 border-b">Email</th>
+                  <th className="py-3 px-4 border-b">Vendor Name</th>
                   <th className="py-3 px-4 border-b text-center">Actions</th>
                 </tr>
               </thead>
@@ -67,6 +68,7 @@ export const ManageSupplier = () => {
                     <td className="py-3 px-4 border-b">{supplier.billingAddress.name}</td>
                     <td className="py-3 px-4 border-b">{supplier.billingAddress.company}</td>
                     <td className="py-3 px-4 border-b">{supplier.billingAddress.email}</td>
+                    <td className="py-3 px-4 border-b">{supplier.additionalDetails.plantName}</td>
                     <td className="py-3 px-4 border-b text-center">
                       <button
                         onClick={() => handleDeleteSupplier(supplier._id)}
