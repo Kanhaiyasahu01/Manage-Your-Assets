@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import { fetchWarehousesService } from "../services/operations/warehouse";
+import { fetchWarehousesService, getAllCategoriesService } from "../services/operations/warehouse";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { addNewProduct } from "../services/operations/warehouse";
-
 export const AddNewProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate(); 
   const { token } = useSelector((state) => state.auth)
   const {warehouses} = useSelector((state)=> state.warehouse);
+  const [allCategories,setAllCategories]= useState([]);
 
-console.log(warehouses);
+    useEffect(() => {
+      if (token) {
+        getAllCategoriesService(token, setAllCategories);
+      }
+    }, [token]);
+    console.log(allCategories);
+
   const [formData, setFormData] = useState({
     warehouseId: "",
     name: "",
@@ -97,19 +103,26 @@ console.log(warehouses);
         <div className="flex flex-row justify-between items-center gap-3">
           {/* Category */}
           <div className="w-1/2">
-            <label className="block text-sm font-medium mb-1" htmlFor="category">
-              Category
-            </label>
-            <input
-              type="text"
-              name="category"
-              id="category"
-              value={formData.category}
-              onChange={handleChange}
-              placeholder="Enter category"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+  <label className="block text-sm font-medium mb-1" htmlFor="category">
+    Category
+  </label>
+  <select
+    name="category"
+    id="category"
+    value={formData.category}
+    onChange={handleChange}
+    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    <option value="" disabled>Select a category</option>
+    {allCategories.map((item) => (
+      <option key={item._id} value={item.category}>
+        {item.category}
+      </option>
+    ))}
+  </select>
+</div>
+
+
 
           {/* Subcategory */}
           <div className="w-1/2">
