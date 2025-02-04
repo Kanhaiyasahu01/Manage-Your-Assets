@@ -17,7 +17,8 @@ const allowedOrigins = [
 	// "https://assetmate-tle-smashers.netlify.app"
 	// "https://asset-mate-tle-smashers.vercel.app/",
 	"https://assetmate-kanhaiya.netlify.app",
-	"https://manage-your-assets-tle-smashers.vercel.app/"
+	"https://manage-your-assets-tle-smashers.vercel.app/",
+	"https://manage-your-assets-tle-smashers.vercel.app",
 ];
 
 // CORS configuration
