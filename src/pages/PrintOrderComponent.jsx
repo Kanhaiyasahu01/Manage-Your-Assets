@@ -410,60 +410,52 @@ export const PrintOrderComponent = forwardRef((props, ref) => {
         </div>
 
         {termsData && (
-          <div className="mt-5 rounded-md shadow-sm">
-            <h5 className=" font-semibold ">Terms and Conditions:</h5>
-            <div className="pl-10 flex justify-between">
-              <div>
-                <p>
-                  <span className="font-semibold mr-16">Delivery:</span>
-                </p>
-                <p>
-                  <span className="font-semibold mr-2">Payment Terms:</span>
-                </p>
-                <p>
-                  <span className="font-semibold mr-24">GST:</span>{" "}
-                </p>
-                <p>
-                  <span className="font-semibold mr-20">F.O.R.:</span>
-                </p>
-                <p>
-                  <span className="font-semibold mr-16">
-                    Freight & Insurance:
-                  </span>{" "}
-                </p>
-                <p>
-                  <span className="font-semibold mr-16">Validity:</span>{" "}
-                </p>
-                <p>
-                  <span className="font-semibold mr-16">
-                    Packing & Forwarding:
-                  </span>
-                </p>
-              </div>
-              <div>
-                <p>{termsData.delivery}</p>
-                <p>{termsData.paymentTerms}</p>
-                <p>{termsData.gst}</p>
-                <p>{termsData.for}</p>
-                <p> {termsData.freightInsurance}</p>
-                <p>{termsData.validity}</p>
-                <p> {termsData.packingForwarding}</p>
-              </div>
-            </div>
+  <div className="mt-5 rounded-md shadow-sm text-xs leading-tight">
+    <h5 className="font-semibold ">Terms and Conditions:</h5>
+    <div className="pl-10 flex justify-between">
+      <div>
+        <p>
+          <span className="font-semibold mr-16">Delivery:</span>
+        </p>
+        <p>
+          <span className="font-semibold mr-2">Payment Terms:</span>
+        </p>
+        <p>
+          <span className="font-semibold mr-24">GST:</span>
+        </p>
+        <p>
+          <span className="font-semibold mr-20">F.O.R.:</span>
+        </p>
+        <p>
+          <span className="font-semibold mr-16">Freight & Insurance:</span>
+        </p>
+        <p>
+          <span className="font-semibold mr-16">Validity:</span>
+        </p>
+        <p>
+          <span className="font-semibold mr-16">Packing & Forwarding:</span>
+        </p>
+      </div>
+      <div>
+        <p className="text-gray-700">{termsData.delivery}</p>
+        <p className="text-gray-700">{termsData.paymentTerms}</p>
+        <p className="text-gray-700">{termsData.gst}</p>
+        <p className="text-gray-700">{termsData.for}</p>
+        <p className="text-gray-700">{termsData.freightInsurance}</p>
+        <p className="text-gray-700">{termsData.validity}</p>
+        <p className="text-gray-700">{termsData.packingForwarding}</p>
+      </div>
+    </div>
 
-            <p className="mt-4 text-gray-700">
-              We hope you shall find our offer in line with your requirement and
-              shall favour us with your valued Purchase Order. In case of any
-              queries/clarifications required, please feel free to contact us.
-              We assure you of prompt action on the same.
-            </p>
+    <p className="mt-4 text-gray-700 text-xs">
+      We hope you shall find our offer in line with your requirement and shall favour us with your valued Purchase Order. In case of any queries/clarifications required, please feel free to contact us. We assure you of prompt action on the same.
+    </p>
 
-            <p className="mt-4 text-gray-700">
-              Meanwhile, thanking you and assuring you the best of our attention
-              and services at all times.
-            </p>
-          </div>
-        )}
+    <p className="mt-4 text-gray-700 text-xs">
+      Meanwhile, thanking you and assuring you the best of our attention and services at all times.
+    </p>
+  </div>
+)}
 
         <div style={{ textAlign: "center", marginTop: "20px" }}>
           <img

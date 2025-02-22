@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllEnquiriesService } from '../services/operations/enquiry';
-
+import ExportCSVButton from '../components/common/ExportCSVButton';
 export const ManageEnquiry = () => {
   const [enquiries, setEnquiries] = useState([]);
   const [filteredEnquiries, setFilteredEnquiries] = useState([]);
@@ -43,10 +43,32 @@ export const ManageEnquiry = () => {
     navigate(`/sales/enquiries/update/${id}`);
   };
 
+
+  const formattedData = filteredEnquiries.map((enquiry) => ({
+    'Plant Name': enquiry.plantName || '',
+    'Contact Person': enquiry.contactPerson || '',
+    'Created At': new Date(enquiry.createdAt).toLocaleDateString() || '',
+    'Materials': enquiry.materialRequired
+      ? enquiry.materialRequired.map((mat) => `${mat.name.trim()} (${mat.quantity})`).join(', ')
+      : '',
+    'Note': enquiry.note || ''
+  }));
+
+
   return (
     <div className="p-6">
       <div className="bg-white shadow-md rounded p-4 mb-4">
-        <h2 className="text-2xl font-semibold mb-4">Manage Enquiries</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">Manage Enquiries</h2>
+
+          {/* ✅ Reusable ExportCSVButton */}
+          <ExportCSVButton
+            data={formattedData}
+            filename="enquiries.csv"
+            headers={['Plant Name', 'Contact Person', 'Created At', 'Materials', 'Note']}
+          />
+        </div>
+
         <input
           type="text"
           value={searchTerm}
@@ -54,14 +76,15 @@ export const ManageEnquiry = () => {
           placeholder="Search by Plant Name"
           className="p-2 border rounded w-full mb-4"
         />
+
         <input
           type="date"
           value={searchDate}
           onChange={handleDateChange}
           className="p-2 border rounded w-full mb-4"
-          placeholder="Search by Date"
         />
       </div>
+
       <div className="bg-white shadow-md rounded p-4">
         {filteredEnquiries.length > 0 ? (
           <table className="w-full table-auto border-collapse">
