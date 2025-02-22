@@ -399,6 +399,8 @@ export const PrintQuotation = forwardRef((props, ref) => {
             </tbody>
           </table>
         </div>
+
+
         <div className="flex w-full justify-end items-center">
           <p className="text-lg font-semibold text-gray-800">
             Grand Total:{" "}
@@ -407,6 +409,8 @@ export const PrintQuotation = forwardRef((props, ref) => {
             </span>
           </p>
         </div>
+
+
         {termsData && (
           <div className="mt-5 rounded-md shadow-sm">
             <h5 className=" font-semibold ">Terms and Conditions:</h5>
@@ -438,6 +442,7 @@ export const PrintQuotation = forwardRef((props, ref) => {
                   </span>
                 </p>
               </div>
+              
               <div>
                 <p>{termsData.delivery}</p>
                 <p>{termsData.paymentTerms}</p>

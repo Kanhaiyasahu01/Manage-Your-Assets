@@ -6,7 +6,6 @@ import invoiceFooter from "../assets/invoiceFooter.png";
 import { apiConnector } from "../services/apiconnector";
 import { termsEndPoints } from "../services/apis";
 import { fetchOrderService } from "../services/operations/client";
-
 export const PrintOrderComponent = forwardRef((props, ref) => {
   const { GET } = termsEndPoints;
   const { id } = useParams();
@@ -69,22 +68,72 @@ export const PrintOrderComponent = forwardRef((props, ref) => {
   return (
     <div>
       {/* Checkbox Options for Selecting Columns */}
-      <div className="checkbox-container p-4 rounded-lg flex justify-center gap-6 mb-4">
-        {Object.keys(selectedColumns).map((column) => (
-          <label key={column} className="flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={selectedColumns[column]}
-              onChange={() => handleCheckboxChange(column)}
-              className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-            />
-            <span className="ml-2 text-gray-800 font-medium">
-              {column.replace(/([A-Z])/g, " $1").trim()}
-            </span>
-          </label>
-        ))}
+      <div className="checkbox-container  p-4 rounded-lg flex justify-center gap-6 mb-4">
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={selectedColumns.serialNo}
+            onChange={() => handleCheckboxChange("serialNo")}
+            className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span className="ml-2 text-gray-800 font-medium">Serial No</span>
+        </label>
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={selectedColumns.productName}
+            onChange={() => handleCheckboxChange("productName")}
+            className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span className="ml-2 text-gray-800 font-medium">Product Name</span>
+        </label>
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={selectedColumns.quantity}
+            onChange={() => handleCheckboxChange("quantity")}
+            className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span className="ml-2 text-gray-800 font-medium">Quantity</span>
+        </label>
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={selectedColumns.price}
+            onChange={() => handleCheckboxChange("price")}
+            className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span className="ml-2 text-gray-800 font-medium">Price</span>
+        </label>
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={selectedColumns.tax}
+            onChange={() => handleCheckboxChange("tax")}
+            className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span className="ml-2 text-gray-800 font-medium">Tax</span>
+        </label>
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={selectedColumns.discount}
+            onChange={() => handleCheckboxChange("discount")}
+            className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span className="ml-2 text-gray-800 font-medium">Discount</span>
+        </label>
+        <label className="flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={selectedColumns.netPrice}
+            onChange={() => handleCheckboxChange("netPrice")}
+            className="form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          />
+          <span className="ml-2 text-gray-800 font-medium">Net Price/UOM</span>
+        </label>
       </div>
-
+      {/* Below is the printable things */}
       <div
         ref={ref}
         style={{

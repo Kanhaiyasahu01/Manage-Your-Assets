@@ -112,7 +112,6 @@ const PrintDownloadComponent = () => {
   </div>
 </div>
       <PrintQuotation ref={componentRef} />
-
     </div>
   );
 };

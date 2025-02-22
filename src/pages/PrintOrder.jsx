@@ -122,8 +122,8 @@ export const PrintOrder = () => {
       </div>
 
       {/* Render the PrintOrderComponent with the ref */}
-      <div ref={componentRef}>
-        <PrintOrderComponent isDownloading={isDownloading} /> {/* Pass the download state */}
+      <div >
+        <PrintOrderComponent ref={componentRef} isDownloading={isDownloading} /> {/* Pass the download state */}
       </div>
     </div>
   );
