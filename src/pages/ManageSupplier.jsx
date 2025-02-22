@@ -1,58 +1,73 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ConfirmationModal } from '../components/common/ConfirmationModel';
-import { fetchSuppliersService,deleteSupplierService } from '../services/operations/supplier';
+import { fetchSuppliersService, deleteSupplierService } from '../services/operations/supplier';
+import ExportCSVButton from '../components/common/ExportCSVButton'; // ✅ Import Export CSV Button
+
 export const ManageSupplier = () => {
   const dispatch = useDispatch();
-  const { suppliers } = useSelector((state) => state.supplier); // Assuming you have a supplier slice
+  const { suppliers } = useSelector((state) => state.supplier);
   const { token, loading: authLoading } = useSelector((state) => state.auth);
   const { loading: supplierLoading } = useSelector((state) => state.supplier);
-  
-  // State for the confirmation modal
+
+  // State for confirmation modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [supplierIdToDelete, setSupplierIdToDelete] = useState(null);
 
-  // Fetch suppliers when the component is mounted
+  // Fetch suppliers on component mount
   useEffect(() => {
     if (suppliers.length === 0) {
-      dispatch(fetchSuppliersService(token)); // Fetch suppliers if the list is empty
+      dispatch(fetchSuppliersService(token));
     }
   }, [suppliers, dispatch, token]);
 
   const handleDeleteSupplier = (supplierId) => {
-    setSupplierIdToDelete(supplierId); // Set the supplier ID to delete
-    setIsModalOpen(true); // Open the confirmation modal
+    setSupplierIdToDelete(supplierId);
+    setIsModalOpen(true);
   };
 
   const handleConfirmDelete = () => {
     if (supplierIdToDelete) {
-      dispatch(deleteSupplierService(token, supplierIdToDelete)); // Pass the ID directly
-      setSupplierIdToDelete(null); // Clear the supplier ID
-      setIsModalOpen(false); // Close the modal
+      dispatch(deleteSupplierService(token, supplierIdToDelete));
+      setSupplierIdToDelete(null);
+      setIsModalOpen(false);
     }
   };
 
   const handleCancelDelete = () => {
-    setIsModalOpen(false); // Close the modal
-    setSupplierIdToDelete(null); // Clear the supplier ID
+    setIsModalOpen(false);
+    setSupplierIdToDelete(null);
   };
+
+  // ✅ Format Supplier Data for CSV Export
+  const formattedSuppliers = suppliers.map((supplier, index) => ({
+    'S/N': index + 1,
+    'Name': supplier.billingAddress.name,
+    'Company': supplier.billingAddress.company,
+    'Email': supplier.billingAddress.email,
+    'Vendor Name': supplier?.additionalDetails?.plantName || 'N/A',
+  }));
+
+  const csvHeaders = ['S/N', 'Name', 'Company', 'Email', 'Vendor Name'];
 
   return (
     <div className="container mx-auto mt-10">
-      <div className="w-full bg-white shadow-xl p-4 mb-4 rounded-lg">
+      <div className="w-full bg-white shadow-xl p-4 mb-4 rounded-lg flex justify-between items-center">
         <h1 className="text-3xl font-bold text-center text-blue-600">Supplier List</h1>
+
+        {/* ✅ Export to CSV Button */}
+        <ExportCSVButton data={formattedSuppliers} filename="suppliers.csv" headers={csvHeaders} />
       </div>
-      
-      {/* Loading state */}
+
+      {/* Loading State */}
       {(authLoading || supplierLoading) ? (
         <div className="text-center">Loading...</div>
       ) : (
-        // Card container for the table
         <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200">
           {suppliers && suppliers.length > 0 ? (
             <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-inner">
               <thead className='bg-blue-600 text-white'>
-                <tr className="bg-gray-100 text-gray-700 text-left">
+                <tr>
                   <th className="py-3 px-4 border-b">S. No</th>
                   <th className="py-3 px-4 border-b">Name</th>
                   <th className="py-3 px-4 border-b">Company</th>
@@ -68,7 +83,7 @@ export const ManageSupplier = () => {
                     <td className="py-3 px-4 border-b">{supplier.billingAddress.name}</td>
                     <td className="py-3 px-4 border-b">{supplier.billingAddress.company}</td>
                     <td className="py-3 px-4 border-b">{supplier.billingAddress.email}</td>
-                    <td className="py-3 px-4 border-b">{supplier.additionalDetails.plantName}</td>
+                    <td className="py-3 px-4 border-b">{supplier?.additionalDetails?.plantName || 'N/A'}</td>
                     <td className="py-3 px-4 border-b text-center">
                       <button
                         onClick={() => handleDeleteSupplier(supplier._id)}

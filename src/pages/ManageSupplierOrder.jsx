@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllSupplierOrdersService, deleteSupplierOrderByIdService } from '../services/operations/supplier';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmationModal } from '../components/common/ConfirmationModel';
+import ExportCSVButton from '../components/common/ExportCSVButton'; // ✅ Import Export CSV Button
 
 export const ManageSupplierOrder = () => {
   const [fromDate, setFromDate] = useState('');
@@ -18,35 +19,30 @@ export const ManageSupplierOrder = () => {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
 
-  // Fetch all supplier orders and set them in both orders and filteredOrders
   useEffect(() => {
     dispatch(fetchAllSupplierOrdersService(token, setOrders));
   }, [dispatch, token]);
 
-  // Automatically filter orders when any search field changes
   useEffect(() => {
     let filtered = [...orders];
 
-    // Filter by supplier name
     if (supplierName.trim() !== '') {
       filtered = filtered.filter((order) =>
         order.supplier?.billingAddress?.company?.toLowerCase().includes(supplierName.toLowerCase())
       );
     }
 
-    // Filter by order number
     if (orderNumber.trim() !== '') {
       filtered = filtered.filter((order) =>
         order.orderNumber?.toLowerCase().includes(orderNumber.toLowerCase())
       );
     }
 
-    // Filter by date range
     const fromDateObj = fromDate ? new Date(fromDate) : null;
     const toDateObj = toDate ? new Date(toDate) : null;
 
     if (toDateObj) {
-      toDateObj.setHours(23, 59, 59, 999); // Set time to the end of the day
+      toDateObj.setHours(23, 59, 59, 999);
     }
 
     filtered = filtered.filter((order) => {
@@ -74,13 +70,9 @@ export const ManageSupplierOrder = () => {
       const { orderId, supplierId } = orderToDelete;
 
       try {
-        const formData = {
-          orderId,
-          supplierId,
-        };
+        const formData = { orderId, supplierId };
         await dispatch(deleteSupplierOrderByIdService(token, formData));
 
-        // Update UI to remove the deleted order
         setFilteredOrders((prev) => prev.filter((order) => order._id !== orderToDelete.orderId));
         setOrders((prev) => prev.filter((order) => order._id !== orderToDelete.orderId));
       } catch (error) {
@@ -91,14 +83,25 @@ export const ManageSupplierOrder = () => {
     }
   };
 
+
+  // ✅ Format Data for CSV Export
+  const formattedOrders = filteredOrders.map((order, index) => ({
+    'S/N': index + 1,
+    'Supplier Name': order.supplier?.billingAddress?.company || 'N/A',
+    'Date': new Date(order.createdAt).toLocaleDateString('en-US'),
+    'Total Amount': order.grandTotal,
+  }));
+
+  const csvHeaders = ['S/N', 'Supplier Name', 'Date', 'Total Amount'];
+
   return (
     <div className="manage-supplier-order-container p-6">
-
       {/* Header */}
-      <div className="w-full bg-white shadow-xl p-4 mb-4 rounded-lg">
-        <h1 className="text-3xl font-bold text-center text-blue-600">
-          Manage Supplier Orders
-        </h1>
+      <div className="w-full bg-white shadow-xl p-4 mb-4 rounded-lg flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-blue-600">Manage Supplier Orders</h1>
+
+        {/* ✅ Export to CSV Button */}
+        <ExportCSVButton data={formattedOrders} filename="supplier_orders.csv" headers={csvHeaders} />
       </div>
 
       {/* Search Form Card */}
@@ -167,12 +170,8 @@ export const ManageSupplierOrder = () => {
               filteredOrders.map((order, index) => (
                 <tr key={order._id}>
                   <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {order.supplier.billingAddress.company}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {new Date(order.createdAt).toLocaleDateString('en-US')}
-                  </td>
+                  <td className="border border-gray-300 px-4 py-2">{order.supplier?.billingAddress?.company}</td>
+                  <td className="border border-gray-300 px-4 py-2">{new Date(order.createdAt).toLocaleDateString('en-US')}</td>
                   <td className="border border-gray-300 px-4 py-2">{order.grandTotal}</td>
                   <td className="border border-gray-300 px-4 py-2">
                     <button
@@ -192,7 +191,7 @@ export const ManageSupplierOrder = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center border px-4 py-2">
+                <td colSpan="6" className="text-center border px-4 py-2">
                   No supplier orders found
                 </td>
               </tr>

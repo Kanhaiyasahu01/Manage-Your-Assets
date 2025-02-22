@@ -9,7 +9,7 @@ import {
 } from '../../services/operations/client';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmationModal } from '../common/ConfirmationModel';
-
+import ExportCSVButton from '../common/ExportCSVButton';
 export const ManageDocument = ({ type }) => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
@@ -24,12 +24,13 @@ export const ManageDocument = ({ type }) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
 
+  console.log("INV",filteredDocuments);
   useEffect(() => {
     if (type === 'invoice') {
       dispatch(fetchAllOrdersService(token, setDocuments));
-    } else if(type === 'marketing')
-        dispatch(fetchMarketingQuotations(token,setDocuments));
-    else {
+    } else if (type === 'marketing') {
+      dispatch(fetchMarketingQuotations(token, setDocuments));
+    } else {
       dispatch(fetchAllQuotationsService(token, setDocuments));
     }
   }, [dispatch, token, type]);
@@ -39,8 +40,8 @@ export const ManageDocument = ({ type }) => {
 
     if (clientName.trim() !== '') {
       filtered = filtered.filter((document) =>
-        document.client.billingAddress.company
-          .toLowerCase()
+        document.client?.billingAddress?.company
+          ?.toLowerCase()
           .includes(clientName.toLowerCase())
       );
     }
@@ -52,12 +53,10 @@ export const ManageDocument = ({ type }) => {
         .trim();
       filtered = filtered.filter((document) => {
         const documentNum =
-          document.documentDetails && document.documentDetails.documentNumber
-            ? document.documentDetails.documentNumber.replace(
-                type === 'invoice' ? 'INV-' : 'QUO-',
-                ''
-              )
-            : '';
+          document.documentDetails?.documentNumber?.replace(
+            type === 'invoice' ? 'INV-' : 'QUO-',
+            ''
+          ) || '';
 
         return documentNum.includes(cleanedDocumentNumber);
       });
@@ -72,10 +71,8 @@ export const ManageDocument = ({ type }) => {
 
     filtered = filtered.filter((document) => {
       const documentDate = new Date(document.createdAt);
-
       const isAfterFromDate = fromDateObj ? documentDate >= fromDateObj : true;
       const isBeforeToDate = toDateObj ? documentDate <= toDateObj : true;
-
       return isAfterFromDate && isBeforeToDate;
     });
 
@@ -101,7 +98,7 @@ export const ManageDocument = ({ type }) => {
           orderId: documentId,
           clientId,
         };
-        console.log("formData", formData);
+        console.log('formData', formData);
         await dispatch(deleteOrderByIdService(token, formData));
 
         setFilteredDocuments((prev) =>
@@ -120,19 +117,35 @@ export const ManageDocument = ({ type }) => {
     }
   };
 
+  // ✅ Format data for CSV export
+  const formattedData = filteredDocuments.map((document, index) => ({
+    'S/N': index + 1,
+    'Client Name': document.client?.billingAddress?.company || 'N/A',
+    'Date': new Date(document.createdAt).toLocaleDateString('en-US'),
+    'Document Number':
+      document.invoiceDetails?.invoiceNumber || (type === 'invoice' ? 'INV-N/A' : 'QUO-N/A'),
+    'Total Amount': document.grandTotal || 0,
+  }));
+
   return (
     <div className="manage-document-container p-6">
+      <div className="w-full bg-white shadow-xl p-4 mb-4 rounded-lg flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-blue-600">
+          Manage {type === 'invoice' ? 'Invoices' : 'Quotations'}
+        </h1>
 
-      <div className="w-full bg-white shadow-xl p-4 mb-4 rounded-lg">
-      <h1 className="text-3xl font-bold text-center text-blue-600">
-        Manage {type === 'invoice' ? 'Invoices' : 'Quotations'}
-      </h1>
+        {/* ✅ Export to CSV Button */}
+        <ExportCSVButton
+          data={formattedData}
+          filename={`${type}-documents.csv`}
+          headers={['S/N', 'Client Name', 'Date', 'Document Number', 'Total Amount']}
+        />
       </div>
 
       {/* Search Form Card */}
       <div className="bg-white shadow-md rounded-lg p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">Search Documents</h2>
-        <div className="flex gap-4 mb-6">
+        <div className="flex gap-4 mb-6 flex-wrap">
           <div>
             <label className="block mb-2 font-semibold">From Date</label>
             <input
@@ -172,9 +185,7 @@ export const ManageDocument = ({ type }) => {
               type="text"
               value={documentNumber}
               onChange={(e) => setDocumentNumber(e.target.value)}
-              placeholder={`Format: ${
-                type === 'invoice' ? 'INV-' : 'QUO-'
-              }1729332464241`}
+              placeholder={`Format: ${type === 'invoice' ? 'INV-' : 'QUO-'}XXXXX`}
               className="border px-2 py-1 rounded"
             />
           </div>
@@ -202,29 +213,20 @@ export const ManageDocument = ({ type }) => {
                 <tr key={document._id}>
                   <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
                   <td className="border border-gray-300 px-4 py-2">
-  {document.client && document.client.billingAddress
-    ? document.client.billingAddress.company
-    : 'N/A'}
-</td>
+                    {document.client?.billingAddress?.company || 'N/A'}
+                  </td>
                   <td className="border border-gray-300 px-4 py-2">
                     {new Date(document.createdAt).toLocaleDateString('en-US')}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">{document.grandTotal}</td>
-                  <td className="border border-gray-300 px-4 py-2 ">
+                  <td className="border border-gray-300 px-4 py-2">
                     <button
                       className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700 mr-2"
                       onClick={() => handleViewDocument(document._id)}
                     >
                       View
                     </button>
-                    {/* <button
-                      className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700"
-                      onClick={() =>
-                        openDeleteModal(document._id, document.client._id)
-                      }
-                    >
-                      Delete
-                    </button> */}
+                    {/* Delete Button can be re-enabled if needed */}
                   </td>
                 </tr>
               ))
@@ -238,15 +240,6 @@ export const ManageDocument = ({ type }) => {
           </tbody>
         </table>
       </div>
-
-      {/* Confirmation Modal */}
-      {/* <ConfirmationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onConfirm={handleDeleteDocument}
-        title={`Confirm Deletion`}
-        message={`Are you sure you want to delete this ${type === 'invoice' ? 'invoice' : 'quotation'}?`}
-      /> */}
     </div>
   );
 };

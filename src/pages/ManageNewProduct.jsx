@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchWarehousesService } from '../services/operations/warehouse';
-// import { deleteProduct } from '../services/operations/product';
-import { ConfirmationModal } from '../components/common/ConfirmationModel';
 import { deleteProduct } from '../services/operations/warehouse';
+import { ConfirmationModal } from '../components/common/ConfirmationModel';
+import ExportCSVButton from '../components/common/ExportCSVButton'; // ✅ Import Export CSV Button
 
 export const ManageNewProduct = () => {
   const dispatch = useDispatch();
@@ -41,19 +41,14 @@ export const ManageNewProduct = () => {
   const handleDeleteProduct = async () => {
     if (productIdToDelete) {
       try {
-        // Dispatch delete product action
         await dispatch(deleteProduct(productIdToDelete, token, selectedWarehouse));
-
-        // Update the local state to reflect the product deletion
         setProducts((prevProducts) =>
           prevProducts.filter(product => product._id !== productIdToDelete)
         );
-
-        // Close the modal after deletion
         setIsModalOpen(false);
       } catch (error) {
         console.error('Failed to delete product:', error);
-        setIsModalOpen(false); // Close the modal on error
+        setIsModalOpen(false);
       }
     }
   };
@@ -62,16 +57,26 @@ export const ManageNewProduct = () => {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // ✅ Format Products Data for CSV Export
+  const formattedProducts = filteredProducts.map((product, index) => ({
+    'S/N': index + 1,
+    'Product Name': product.name,
+    'Retail Price': product.retailPrice,
+    'Stock Unit': product.stockUnit,
+  }));
+
+  const csvHeaders = ['S/N', 'Product Name', 'Retail Price', 'Stock Unit'];
+
   return (
     <div className="container mx-auto p-6">
-   <div className="w-full bg-white shadow-xl p-4 mb-4 rounded-lg">
-        <h1 className="text-3xl font-bold text-center text-blue-600">Manage Products</h1>
+      <div className="w-full bg-white shadow-xl p-4 mb-4 rounded-lg flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-blue-600">Manage Products</h1>
+
+        {/* ✅ Export to CSV Button */}
+        <ExportCSVButton data={formattedProducts} filename="products.csv" headers={csvHeaders} />
       </div>
 
-      {/* Main Card */}
       <div className="bg-white shadow-lg rounded-lg p-6">
-        
-        {/* Selection and Search Card */}
         <div className="bg-gray-100 p-4 rounded-lg mb-6 shadow-md flex flex-col md:flex-row gap-3">
           <select
             value={selectedWarehouse}
@@ -95,7 +100,7 @@ export const ManageNewProduct = () => {
           />
         </div>
 
-        {/* Products Table Card */}
+        {/* Products Table */}
         <div className="bg-white shadow-md rounded-lg p-6">
           <h3 className="text-xl font-semibold mb-4">Products List</h3>
           <table className="min-w-full border border-gray-300">
