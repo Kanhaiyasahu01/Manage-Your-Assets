@@ -51,7 +51,7 @@ const termRoutes = require("./routes/Terms");
 const accountRoutes = require("./routes/Account");
 const enquiryRoutes = require("./routes/Enquiry");
 const marketingRoutes = require("./routes/Marketing");
-
+const backupRoutes = require("./routes/backupRoutes");
 // Route handling
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/warehouse", warehouseRoutes);
@@ -61,6 +61,7 @@ app.use("/api/v1/terms", termRoutes);
 app.use("/api/v1/account", accountRoutes);
 app.use("/api/v1/enquiry", enquiryRoutes);
 app.use("/api/v1/marketing", marketingRoutes);
+app.use("/api/v1/backup", backupRoutes);
 
 // Default route
 app.get("/", (req, res) => {

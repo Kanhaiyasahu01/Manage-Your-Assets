@@ -102,3 +102,11 @@ export const marketingEndPoints = {
     GET_MARKETING_QUOTATION:`${BASE_URL}/marketing/get-all-quotations`,
 }
 
+// backupEndPoints.js
+
+export const backupEndPoints = {
+    BACKUP: `${BASE_URL}/backup/backup`,            // Trigger Backup
+    BACKUPS_LIST: `${BASE_URL}/backup/backups`,     // Get All Backups
+    RESTORE_BACKUP: `${BASE_URL}/backup/restore`,   // Restore Backup
+    DELETE_BACKUP: `${BASE_URL}/backup/delete`,     // Delete Backup
+};

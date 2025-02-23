@@ -51,6 +51,7 @@ import { useNavigate } from 'react-router-dom';
 import { Category } from './pages/Category';
 import { ManageCategory } from './pages/ManageCategory';
 import CustomTerms from './pages/CustomTerms';
+import BackupManager from './pages/BackupManager';
 function App() {
 
   const {user} = useSelector((state)=>state.profile);
@@ -134,6 +135,7 @@ function App() {
         <Route path="/accounts/:id" element={<AccountDetail />} />
         <Route path="crm/add-client" element={<AddClient />} />
         <Route path="crm/manage-client" element={<ManageClient />} />
+
             </>
             )
         }
