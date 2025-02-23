@@ -50,6 +50,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Category } from './pages/Category';
 import { ManageCategory } from './pages/ManageCategory';
+import CustomTerms from './pages/CustomTerms';
 function App() {
 
   const {user} = useSelector((state)=>state.profile);
@@ -125,7 +126,7 @@ function App() {
             <>
         {/* <Route path="dashboard/my-profile" element={<DashboardView />} /> */}
         <Route path="dashboard/view" element={<DashboardView />} />
-        <Route path="term/create" element={<TermsForm />} />
+        <Route path="term/create" element={<CustomTerms />} />
         <Route path="/accounts/accounts" element={<Accounts />} />    
         <Route path="/accounts/manage-accounts" element={<ManageAccounts />} />    
         <Route path="/accounts/transaction" element={<Transaction />} />    

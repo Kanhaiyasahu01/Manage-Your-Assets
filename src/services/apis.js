@@ -52,6 +52,9 @@ export const termsEndPoints = {
     GET:`${BASE_URL}/terms/terms/get`,
     UPDATE:`${BASE_URL}/terms/terms`,
     DELETE:`${BASE_URL}/terms/terms`,
+    CREATE_CUSTOM_TERM:`${BASE_URL}/Terms/create-or-update`,
+    GET_CUSTOM_TERM:`${BASE_URL}/Terms/get-all-custom-terms`
+
 }
 
 
@@ -98,3 +101,4 @@ export const marketingEndPoints = {
     GET_MARKETING_USERS:`${BASE_URL}/marketing/get-users`,
     GET_MARKETING_QUOTATION:`${BASE_URL}/marketing/get-all-quotations`,
 }
+

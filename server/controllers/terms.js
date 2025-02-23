@@ -159,3 +159,77 @@ exports.deleteTerms = async (req, res) => {
     }
   };
   
+
+
+// ✅ Create or Update Custom Terms
+exports.createOrUpdateCustomTerms = async (req, res) => {
+    try {
+        const { customTerms } = req.body;
+
+        // ✅ Validate that at least one term is provided
+        if (!customTerms || !Array.isArray(customTerms) || customTerms.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "At least one custom term is required",
+            });
+        }
+
+        // ✅ Validate each term (name & description required)
+        for (const term of customTerms) {
+            if (!term.name || !term.description) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Each term must have a name and description",
+                });
+            }
+        }
+
+        // ✅ Create or Update Terms
+        const termDoc = await Term.findOneAndUpdate(
+            {}, // Add condition if updating a specific doc
+            { customTerms },
+            { new: true, upsert: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Custom terms saved successfully",
+            data: termDoc,
+        });
+    } catch (error) {
+        console.error("Error saving custom terms:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to save custom terms",
+            error: error.message,
+        });
+    }
+};
+
+
+exports.getAllCustomTerms = async (req, res) => {
+  try {
+      // Fetch all custom terms from the database
+      const terms = await Term.find();
+
+      if (!terms || terms.length === 0) {
+          return res.status(404).json({
+              success: false,
+              message: "No custom terms found",
+          });
+      }
+
+      res.status(200).json({
+          success: true,
+          message: "Custom terms fetched successfully",
+          data: terms,
+      });
+  } catch (error) {
+      console.error("Error fetching custom terms:", error);
+      res.status(500).json({
+          success: false,
+          message: "Failed to fetch custom terms",
+          error: error.message,
+      });
+  }
+};
