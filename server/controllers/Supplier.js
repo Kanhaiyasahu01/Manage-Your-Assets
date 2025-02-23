@@ -49,6 +49,49 @@ console.log("inside create address controller")
   }
 };
 
+// Controller for updating Address
+exports.updateAddress = async (req, res) => {
+  try {
+    console.log("inside backend of update adddress");
+    const { id } = req.params; // Address ID from URL
+    const { name, company, phone, email, address, city, state, country, postbox } = req.body;
+
+    // Validate required fields
+    if (!name || !company || !phone || !email || !city || !state || !country) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, company, phone, email, city, state, and country are required fields",
+      });
+    }
+
+    // Find and update the address
+    const updatedAddress = await Address.findByIdAndUpdate(
+      id,
+      { name, company, phone, email, address, city, state, country, postbox },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedAddress) {
+      return res.status(404).json({
+        success: false,
+        message: "Address not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Address updated successfully",
+      address: updatedAddress,
+    });
+  } catch (error) {
+    console.error("Error updating address:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while updating the address",
+      error: error.message,
+    });
+  }
+};
 
 
 // Controller for creating Additional Details
@@ -101,7 +144,95 @@ exports.createAdditionalDetails = async (req, res) => {
     }
   };
 
-  
+// Controller for updating Additional Details
+exports.updateAdditionalDetails = async (req, res) => {
+  try {
+    console.log("Inside backend updateAdditionalDetails");
+
+    const { id } = req.params; // AdditionalDetails ID from URL
+    console.log("id:", id);
+    console.log("req body:", req.body);
+
+    const { plantName, customFields = [] } = req.body;
+
+    // ✅ Validate required fields
+    if (!plantName) {
+      return res.status(400).json({
+        success: false,
+        message: "Plant Name is required",
+      });
+    }
+
+    // ✅ Find existing AdditionalDetails by ID
+    const existingAdditionalDetails = await AdditionalDetails.findById(id);
+    if (!existingAdditionalDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "Additional details not found",
+      });
+    }
+
+    // ✅ Update plantName
+    existingAdditionalDetails.plantName = plantName;
+
+    // ✅ Handle custom fields (Update existing & add new)
+    let customFieldIds = existingAdditionalDetails.customFields || [];
+
+    if (Array.isArray(customFields) && customFields.length > 0) {
+      // Loop through provided custom fields and either update or add them
+      const updatedCustomFieldIds = await Promise.all(
+        customFields.map(async (field) => {
+          if (!field.name || !field.description) {
+            console.warn("Skipping invalid custom field:", field);
+            return null;
+          }
+
+          if (field._id) {
+            // ✅ Update existing custom field
+            const updatedField = await CustomField.findByIdAndUpdate(
+              field._id,
+              { name: field.name, description: field.description },
+              { new: true }
+            );
+            return updatedField ? updatedField._id : null;
+          } else {
+            // ✅ Create new custom field
+            const newCustomField = await CustomField.create({
+              name: field.name,
+              description: field.description,
+            });
+            return newCustomField._id;
+          }
+        })
+      );
+
+      // Filter out nulls (from invalid fields)
+      customFieldIds = updatedCustomFieldIds.filter(Boolean);
+    }
+
+    // ✅ Update custom fields in AdditionalDetails
+    existingAdditionalDetails.customFields = customFieldIds;
+
+    // ✅ Save changes
+    await existingAdditionalDetails.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Additional details updated successfully",
+      additionalDetails: existingAdditionalDetails,
+    });
+
+  } catch (error) {
+    console.error("Error updating additional details:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while updating additional details",
+      error: error.message,
+    });
+  }
+};
+
+
   exports.createSupplier = async (req, res) => {
     try {
       const {billingAddress, shippingAddress, additionalDetails} = req.body;
@@ -305,64 +436,64 @@ exports.updateAddress = async (req, res) => {
 };
 
 
-exports.updateAdditionalDetails = async (req, res) => {
-  try {
-    const { _id, tax, discount, documentId, customFields } = req.body;
+// exports.updateAdditionalDetails = async (req, res) => {
+//   try {
+//     const { _id, tax, discount, documentId, customFields } = req.body;
 
-    // Validate required fields
-    if (!_id || !documentId) {
-      return res.status(400).json({
-        success: false,
-        message: "ID and Document ID are required",
-      });
-    }
+//     // Validate required fields
+//     if (!_id || !documentId) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "ID and Document ID are required",
+//       });
+//     }
 
-    // Check if customFields array is provided, and update the fields
-    let customFieldIds = [];
-    if (customFields && customFields.length > 0) {
-      // Update each custom field and store its ID in the customFieldIds array
-      customFieldIds = await Promise.all(
-        customFields.map(async (field) => {
-          const updatedCustomField = await CustomField.findByIdAndUpdate(
-            field._id,
-            {
-              name: field.name,
-              description: field.description,
-            },
-            { new: true }
-          );
-          return updatedCustomField._id;
-        })
-      );
-    }
+//     // Check if customFields array is provided, and update the fields
+//     let customFieldIds = [];
+//     if (customFields && customFields.length > 0) {
+//       // Update each custom field and store its ID in the customFieldIds array
+//       customFieldIds = await Promise.all(
+//         customFields.map(async (field) => {
+//           const updatedCustomField = await CustomField.findByIdAndUpdate(
+//             field._id,
+//             {
+//               name: field.name,
+//               description: field.description,
+//             },
+//             { new: true }
+//           );
+//           return updatedCustomField._id;
+//         })
+//       );
+//     }
 
-    // Update additional details with the custom field references
-    const updatedAdditionalDetails = await AdditionalDetails.findByIdAndUpdate(
-      _id,
-      {
-        tax,
-        discount,
-        documentId,
-        customFields: customFieldIds,
-      },
-      { new: true }
-    );
+//     // Update additional details with the custom field references
+//     const updatedAdditionalDetails = await AdditionalDetails.findByIdAndUpdate(
+//       _id,
+//       {
+//         tax,
+//         discount,
+//         documentId,
+//         customFields: customFieldIds,
+//       },
+//       { new: true }
+//     );
 
-    // Respond with success
-    return res.status(200).json({
-      success: true,
-      message: "Additional details updated successfully",
-      additionalDetails: updatedAdditionalDetails,
-    });
-  } catch (error) {
-    console.error("Error updating additional details:", error);
-    return res.status(500).json({
-      success: false,
-      message: "An error occurred while updating additional details",
-      error: error.message,
-    });
-  }
-};
+//     // Respond with success
+//     return res.status(200).json({
+//       success: true,
+//       message: "Additional details updated successfully",
+//       additionalDetails: updatedAdditionalDetails,
+//     });
+//   } catch (error) {
+//     console.error("Error updating additional details:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "An error occurred while updating additional details",
+//       error: error.message,
+//     });
+//   }
+// };
 
 
 exports.deleteSupplier = async (req, res) => {

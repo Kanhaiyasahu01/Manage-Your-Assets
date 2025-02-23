@@ -7,7 +7,9 @@ import { addQuotationToMarketingUserService } from "./marketing";
 const {
     ADD_CLIENT,
     ADDITIONAL_DETAILS,
+    UPDATE_ADDITIONAL_DETAILS,
     BILLING_ADDRESS,
+    UPDATE_BILLING_ADDRESS,
     SHIPPING_ADDRESS,
     GET_ALL_CLIENTS,
     CREATE_QUOTATION,
@@ -26,7 +28,7 @@ const {
 // Add Client Service
 export const addClientService = (token, clients, billingAddress, shippingAddress, additionalDetails,formData) => {
   return async (dispatch) => {
-    // console.log("inside add client service")
+    console.log("inside add client service")
     const toastId = toast.loading("Loading...");
 
     try {
@@ -96,6 +98,79 @@ export const addClientService = (token, clients, billingAddress, shippingAddress
     }
   };
 };
+
+export const updateClientService = (token, clientId, formData) => {
+  return async (dispatch, getState) => {
+    const toastId = toast.loading("Updating client...");
+
+    try {
+      const { billingAddress, shippingAddress, additionalDetails } = formData;
+
+      console.log("printing details");
+      console.log(billingAddress,shippingAddress,additionalDetails);
+      // ✅ Step 1: Update Billing Address
+      const billingResponse = await apiConnector(
+        "PUT",
+        `${UPDATE_BILLING_ADDRESS}/${billingAddress._id}`,
+        billingAddress,
+        { Authorization: `Bearer ${token}` }
+      );
+
+      if (!billingResponse?.data?.address?._id) {
+        throw new Error("Failed to update billing address");
+      }
+      console.log("Billing address updated:", billingResponse.data.address);
+
+      // ✅ Step 2: Update Shipping Address
+      const shippingResponse = await apiConnector(
+        "PUT",
+        `${UPDATE_BILLING_ADDRESS}/${shippingAddress._id}`,
+        shippingAddress,
+        { Authorization: `Bearer ${token}` }
+      );
+
+      if (!shippingResponse?.data?.address?._id) {
+        throw new Error("Failed to update shipping address");
+      }
+      console.log("Shipping address updated:", shippingResponse.data.address);
+
+      // ✅ Step 3: Update Additional Details
+      const additionalDetailsResponse = await apiConnector(
+        "PUT",
+        `${UPDATE_ADDITIONAL_DETAILS}/${additionalDetails._id}`,
+        additionalDetails,
+        { Authorization: `Bearer ${token}` }
+      );
+
+      if (!additionalDetailsResponse?.data?.additionalDetails?._id) {
+        throw new Error("Failed to update additional details");
+      }
+      console.log("Additional details updated:", additionalDetailsResponse.data.additionalDetails);
+
+      // ✅ Step 4: Update Redux Store (Skip updating client ID)
+      const { clients } = getState().client;
+      const updatedClients = clients.map((client) =>
+        client._id === clientId
+          ? {
+              ...client,
+              billingAddress: billingResponse.data.address,
+              shippingAddress: shippingResponse.data.address,
+              additionalDetails: additionalDetailsResponse.data.additionalDetails,
+            }
+          : client
+      );
+      dispatch(setClients(updatedClients));
+
+      toast.success("Client updated successfully");
+    } catch (error) {
+      console.error("Error updating client:", error);
+      toast.error("Failed to update client");
+    } finally {
+      toast.dismiss(toastId);
+    }
+  };
+};
+
 
 
 export const fetchClientsService = (token) => {

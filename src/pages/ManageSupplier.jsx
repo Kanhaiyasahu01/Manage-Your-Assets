@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { ConfirmationModal } from '../components/common/ConfirmationModel';
 import { fetchSuppliersService, deleteSupplierService } from '../services/operations/supplier';
 import ExportCSVButton from '../components/common/ExportCSVButton'; // ✅ Import Export CSV Button
 
 export const ManageSupplier = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { suppliers } = useSelector((state) => state.supplier);
   const { token, loading: authLoading } = useSelector((state) => state.auth);
   const { loading: supplierLoading } = useSelector((state) => state.supplier);
 
-  // State for confirmation modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [supplierIdToDelete, setSupplierIdToDelete] = useState(null);
 
@@ -37,6 +38,11 @@ export const ManageSupplier = () => {
   const handleCancelDelete = () => {
     setIsModalOpen(false);
     setSupplierIdToDelete(null);
+  };
+
+  // ✅ Handle Update Button Click
+  const handleUpdateSupplier = (supplier) => {
+    navigate('/supplier/new-supplier', { state: { supplier } }); // Pass supplier data for update
   };
 
   // ✅ Format Supplier Data for CSV Export
@@ -84,7 +90,16 @@ export const ManageSupplier = () => {
                     <td className="py-3 px-4 border-b">{supplier.billingAddress.company}</td>
                     <td className="py-3 px-4 border-b">{supplier.billingAddress.email}</td>
                     <td className="py-3 px-4 border-b">{supplier?.additionalDetails?.plantName || 'N/A'}</td>
-                    <td className="py-3 px-4 border-b text-center">
+                    <td className="py-3 px-4 border-b text-center space-x-2">
+                      {/* ✅ Update Button */}
+                      <button
+                        onClick={() => handleUpdateSupplier(supplier)}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded"
+                      >
+                        Update
+                      </button>
+
+                      {/* 🗑️ Delete Button */}
                       <button
                         onClick={() => handleDeleteSupplier(supplier._id)}
                         className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded"

@@ -6,6 +6,8 @@ import { deleteSupplier } from "../../slice/supplierSlice";
 const {
     ADDITIONAL_DETAILS,
     BILLING_ADDRESS,
+    UPDATE_BILLING_ADDRESS,
+    UPDATE_ADDITIONAL_DETAILS,
     SHIPPING_ADDRESS,
     ADD_SUPPLIER,
     CREATE_SUPPLIER_ORDER,
@@ -15,6 +17,7 @@ const {
     DELETE_ORDER,
     GET_ORDER,
 } = supplierEndPoints;
+
 
 export const addSupplierService = (token, suppliers, billingAddress, shippingAddress, additionalDetails, formData, navigate) => {
     return async (dispatch) => {
@@ -96,6 +99,81 @@ export const addSupplierService = (token, suppliers, billingAddress, shippingAdd
     };
   };
 
+  export const updateSupplierService = (token, supplierId, formData) => {
+    return async (dispatch, getState) => {
+      const toastId = toast.loading("Updating supplier...");
+  
+      try {
+        const { billingAddress, shippingAddress, additionalDetails } = formData;
+  
+        console.log("Updating Supplier with data:");
+        console.log("Billing Address:", billingAddress);
+        console.log("Shipping Address:", shippingAddress);
+        console.log("Additional Details:", additionalDetails);
+  
+        // ✅ Step 1: Update Billing Address
+        const billingResponse = await apiConnector(
+          "PUT",
+          `${UPDATE_BILLING_ADDRESS}/${billingAddress._id}`,
+          billingAddress,
+          { Authorization: `Bearer ${token}` }
+        );
+  
+        if (!billingResponse?.data?.address?._id) {
+          throw new Error("Failed to update billing address");
+        }
+        console.log("Billing address updated:", billingResponse.data.address);
+  
+        // ✅ Step 2: Update Shipping Address
+        const shippingResponse = await apiConnector(
+          "PUT",
+          `${UPDATE_BILLING_ADDRESS}/${shippingAddress._id}`,
+          shippingAddress,
+          { Authorization: `Bearer ${token}` }
+        );
+  
+        if (!shippingResponse?.data?.address?._id) {
+          throw new Error("Failed to update shipping address");
+        }
+        console.log("Shipping address updated:", shippingResponse.data.address);
+  
+        // ✅ Step 3: Update Additional Details
+        const additionalDetailsResponse = await apiConnector(
+          "PUT",
+          `${UPDATE_ADDITIONAL_DETAILS}/${additionalDetails._id}`,
+          additionalDetails,
+          { Authorization: `Bearer ${token}` }
+        );
+  
+        if (!additionalDetailsResponse?.data?.additionalDetails?._id) {
+          throw new Error("Failed to update additional details");
+        }
+        console.log("Additional details updated:", additionalDetailsResponse.data.additionalDetails);
+  
+        // ✅ Step 4: Update Redux Store (Skip updating supplier ID)
+        const { suppliers } = getState().supplier;
+        const updatedSuppliers = suppliers.map((supplier) =>
+          supplier._id === supplierId
+            ? {
+                ...supplier,
+                billingAddress: billingResponse.data.address,
+                shippingAddress: shippingResponse.data.address,
+                additionalDetails: additionalDetailsResponse.data.additionalDetails,
+              }
+            : supplier
+        );
+        dispatch(setSuppliers(updatedSuppliers));
+  
+        toast.success("Supplier updated successfully");
+      } catch (error) {
+        console.error("Error updating supplier:", error);
+        toast.error("Failed to update supplier");
+      } finally {
+        toast.dismiss(toastId);
+      }
+    };
+  };
+  
 
   export const createSupplierOrderService = (token, supplierOrderData, navigate) => {
     return async (dispatch) => {

@@ -6,6 +6,8 @@ const router = express.Router();
 const {
   createSupplier,            // Controller to create a supplier (without order list)
   createAddress,             // Controller to create a billing/shipping address
+  updateAddress,
+  updateAdditionalDetails,
   createAdditionalDetails,   // Controller to create additional details
   createSupplierOrder,
   getAllSuppliers,
@@ -25,9 +27,11 @@ router.post("/create",auth,createSupplier);
 
 // Route for creating a billing or shipping address
 router.post("/address/create",auth,createAddress);
+router.put("/address/update/:id",auth,updateAddress);
 
 // Route for creating additional details
 router.post("/additional-details/create",auth,createAdditionalDetails);
+router.put("/additional-details/update/:id",auth,updateAdditionalDetails);
 
 router.post('/create-supplier-order',auth,createSupplierOrder);
 // Export the router for use in the main application

@@ -30,8 +30,10 @@ export const warehouseEndpoints={
 
 export const clientEndPoints = {
     BILLING_ADDRESS:`${BASE_URL}/supplier/address/create`,
+    UPDATE_BILLING_ADDRESS:`${BASE_URL}/supplier/address/update`,
     SHIPPING_ADDRESS:`${BASE_URL}/supplier/address/create`,
     ADDITIONAL_DETAILS:`${BASE_URL}/supplier/additional-details/create`,
+    UPDATE_ADDITIONAL_DETAILS:`${BASE_URL}/supplier/additional-details/update`,
     ADD_CLIENT:`${BASE_URL}/client/create`,
     GET_ALL_CLIENTS:`${BASE_URL}/client/get-all-clients`,
     CREATE_QUOTATION:`${BASE_URL}/client/create-quotation`,
@@ -55,8 +57,10 @@ export const termsEndPoints = {
 
 export const supplierEndPoints = {
     BILLING_ADDRESS:`${BASE_URL}/supplier/address/create`,
+    UPDATE_BILLING_ADDRESS:`${BASE_URL}/supplier/address/update`,
     SHIPPING_ADDRESS:`${BASE_URL}/supplier/address/create`,
     ADDITIONAL_DETAILS:`${BASE_URL}/supplier/additional-details/create`,
+    UPDATE_ADDITIONAL_DETAILS:`${BASE_URL}/supplier/additional-details/update`,
     ADD_SUPPLIER:`${BASE_URL}/supplier/create`,
     CREATE_SUPPLIER_ORDER:`${BASE_URL}/supplier/create-supplier-order`,
     GET_ALL_SUPPLIERS:`${BASE_URL}/supplier/get-all-suppliers`,
