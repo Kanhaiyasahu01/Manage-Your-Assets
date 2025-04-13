@@ -17,7 +17,7 @@ export default function Navbar() {
           className="w-10 h-10 transition-transform transform hover:scale-110 rounded-full"
         />
         <p className="font-inter text-2xl font-bold tracking-wide">
-          <span className="text-3xl">V</span>INAYAK <span className="text-3xl">S</span>ALES
+          <span className="text-3xl">A</span>SSET <span className="text-3xl">M</span>ATE
         </p>
       </div>
 
