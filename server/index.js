@@ -19,8 +19,10 @@ const allowedOrigins = [
 	"https://assetmate-kanhaiya.netlify.app",
 	"https://manage-your-assets-tle-smashers01.vercel.app/",
 	"https://manage-your-assets-tle-smashers01.vercel.app",
-
+	
 	// new front end url
+	"https://assetmate-kanhaiya01.netlify.app/",
+	"https://assetmate-kanhaiya01.netlify.app"
 
 ];
 
