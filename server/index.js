@@ -20,6 +20,8 @@ const allowedOrigins = [
 	"https://manage-your-assets-tle-smashers01.vercel.app/",
 	"https://manage-your-assets-tle-smashers01.vercel.app",
 
+	// new front end url
+
 ];
 
 // CORS configuration
